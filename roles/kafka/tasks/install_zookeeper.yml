@@ -1,0 +1,7 @@
+---
+- name: ensure zookeeper is at the latest version
+  apt: name=zookeeper state=latest
+- name: ensure zookeeperd is at the latest version
+  apt: name=zookeeperd state=latest
+- name: ensure zookeeper is running (and enable it at boot)
+  service: name=zookeeper state=started enabled=yes

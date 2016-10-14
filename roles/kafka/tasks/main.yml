@@ -1,0 +1,3 @@
+---
+- include: install_zookeeper.yml
+- include: install_kafka.yml

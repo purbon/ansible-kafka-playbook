@@ -1,0 +1,18 @@
+---
+- name: add the kafka group
+  group: name=kafka state=present
+- name: ensure we've a kafka user
+  user:  name=kafka comment="Kafka user" groups="kafka,sudo"
+- name: decompress kafka
+  unarchive: src=kafka.tgz dest={{kafka_source}} remote_src=no
+- name: setup symlink
+  file:
+    src:  {{kafka_source}}/{{ item.path }}
+    dest: {{kafka_source}}/{{ item.dest }}
+    state: link
+  with_items:
+    - { path: 'kafka_2.11-0.8.2.1', dest: 'kafka' }
+- name: Setup the server.properties file
+  template: src=server.properties.j2 dest=kafka_2.11-0.8.2.1/config/server.properties
+- name: Install the Kafka service handler
+  copy: src=init.d/kafka dest=/etc/init.d/ mode=0755

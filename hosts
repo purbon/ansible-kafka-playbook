@@ -1,0 +1,8 @@
+[dbservers]
+192.168.1.5 ansible_user=vagrant
+
+[kafkas]
+192.168.1.5 ansible_user=vagrant kafka_broker_id=0 kafka_hostname=db0
+192.168.1.6 ansible_user=vagrant kafka_broker_id=1 kafka_hostname=db1
+192.168.1.7 ansible_user=vagrant kafka_broker_id=2 kafka_hostname=db2
+

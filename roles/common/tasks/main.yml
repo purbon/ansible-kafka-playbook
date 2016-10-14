@@ -1,0 +1,5 @@
+---
+- name: Setup the etc/hosts file
+  template: src=templates/hosts.j2 dest=/etc/hosts
+- name: ensure default-jre is at the latest version
+  apt: name=default-jre state=latest

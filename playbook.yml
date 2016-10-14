@@ -1,0 +1,48 @@
+---
+- hosts: webservers
+  vars:
+    http_port: 80
+    max_clients: 200
+    remote_user: root
+  tasks:
+  - name: ensure apache is at the latest version
+    apt: name=apache2 state=latest
+    become: yes
+    #  - name: write the apache config file
+    #    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+    #    notify:
+    #    - restart apache
+  - name: ensure apache is running (and enable it at boot)
+    service: name=apache2 state=started enabled=yes
+  handlers:
+    - name: restart apache
+      service: name=apache2 state=restarted
+
+
+- hosts: kafkas
+  vars:
+    remote_user: root
+  tasks:
+  - name: add the kafka group
+    group: name=kafka state=present
+    remote_user: root
+  - name: ensure we've a kafka user
+    user:  name=kafka comment="Kafka user" groups="kafka,sudo"
+  - name: ensure default-jre is at the latest version
+    apt: name=default-jre state=latest
+    remote_user: root
+  - name: ensure zookeeper is at the latest version
+    apt: name=zookeeper state=latest
+    become: true
+  - name: ensure zookeeperd is at the latest version
+    apt: name=zookeeperd state=latest
+    become: true
+  - name: ensure zookeeper is running (and enable it at boot)
+    service: name=zookeeper state=started enabled=yes
+  - name: download kafka targz
+    get_url:
+     url: http://mirror.cc.columbia.edu/pub/software/apache/kafka/0.8.2.1/kafka_2.11-0.8.2.1.tgz
+     dest: /home/vagrant/kafka.tgz
+     mode: 0774
+  - name: decompress kafka
+    unarchive: src=/home/vagrant/kafka.tgz dest=/home/vagrant/kafka
